@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography, LinearProgress } from '@mui/material'
 import { CheckCircle, Close } from '@mui/icons-material'
 import { useMemo, useState } from 'react'
+import { useTheme } from '@mui/material/styles'
 import { questions } from '../../data/questions'
 
 const { quizQuestions } = questions();
@@ -13,6 +14,8 @@ const QuizPage = () => {
   const [quizFinished, setQuizFinished] = useState(false)
 
   const currentQuestion = quizQuestions[currentQuestionIndex]
+
+  const theme = useTheme()
 
   const score = useMemo(
     () => history.filter((item) => item.isCorrect).length,
@@ -62,7 +65,7 @@ const QuizPage = () => {
       <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
         <Card sx={{ width: '100%', maxWidth: 760, p: 2, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
           <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: '#0d2244' }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
               Resultado do Quiz
             </Typography>
 
@@ -72,11 +75,11 @@ const QuizPage = () => {
 
             <Stack spacing={2} sx={{ textAlign: 'left' }}>
               {history.map((item, index) => (
-                <Box key={`${item.question}-${index}`} sx={{ border: '1px solid #dfe7f3', borderRadius: 2, p: 2, backgroundColor: '#f7faff' }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#102d5a', mb: 1 }}>
+                <Box key={`${item.question}-${index}`} sx={{ border: `1px solid ${theme.palette.divider}`, borderRadius: 2, p: 2, backgroundColor: theme.palette.background.default }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
                     {index + 1}. {item.question}
                   </Typography>
-                  <Typography sx={{ color: item.isCorrect ? '#1b7f4d' : '#a33a35' }}>
+                  <Typography sx={{ color: item.isCorrect ? theme.palette.success.main : theme.palette.error.main }}>
                     Sua resposta: {item.selectedAnswer}
                   </Typography>
                   <Typography sx={{ mt: 1 }}>Resposta correta: {item.correctAnswers.join(', ')}</Typography>
@@ -104,12 +107,12 @@ const QuizPage = () => {
       <Card sx={{ width: '100%', maxWidth: 760, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 2 }}>
-            <Typography variant="h5" sx={{ color: '#0d2244', fontWeight: 700 }}>
+            <Typography variant="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700 }}>
               Quiz de Defesa Civil
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 8, minHeight: '16px' }}>
-            <Typography variant="body2" sx={{ color: '#153c73', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: 600 }}>
               {currentQuestion?.level ?? '—'}
             </Typography>
             <Chip sx={{display: 'flex', alignItems: 'center'}} label={`${currentQuestionIndex + 1}/${quizQuestions.length}`} color="primary" />
@@ -119,11 +122,11 @@ const QuizPage = () => {
             <LinearProgress
               variant="determinate"
               value={((currentQuestionIndex + 1) / quizQuestions.length) * 100}
-              sx={{ height: 16, borderRadius: 2, backgroundColor: '#eaf3ff', '& .MuiLinearProgress-bar': { backgroundColor: '#1976d2' } }}
+              sx={{ height: 16, borderRadius: 2, backgroundColor: theme.palette.action.hover, '& .MuiLinearProgress-bar': { backgroundColor: theme.palette.primary.main } }}
             />
           </Box>
 
-          <Typography variant="h6" sx={{ mb: 3, color: '#153c73', fontWeight: 600, textAlign: 'left' }}>
+          <Typography variant="h6" sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left' }}>
             {currentQuestion.question}
           </Typography>
 
@@ -160,12 +163,12 @@ const QuizPage = () => {
           </Stack>
 
           {showFeedback && (
-            <Box sx={{ mt: 3, p: 2.5, borderRadius: 2, backgroundColor: '#edf6ff', border: '1px solid #d2e5ff' }}>
-              <Typography sx={{ fontWeight: 700, mb: 1, color: '#12325c' }}>
+            <Box sx={{ mt: 3, p: 2.5, borderRadius: 2, backgroundColor: theme.palette.info.light, border: `1px solid ${theme.palette.info.main}` }}>
+              <Typography sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
                 Feedback
               </Typography>
 
-              <Typography sx={{ color: '#12325c', mb: 1 }}>
+              <Typography sx={{ color: theme.palette.text.primary, mb: 1 }}>
                 {history[history.length - 1]?.isCorrect
                   ? 'Resposta correta! Você acertou esta questão.'
                   : 'Resposta incorreta. Veja quais opções estavam certas e erradas.'}
@@ -173,16 +176,16 @@ const QuizPage = () => {
 
               <Divider sx={{ my: 1.5 }} />
 
-              <Typography sx={{ fontWeight: 600, color: '#0e5a3b' }}>Certas:</Typography>
-              <Typography sx={{ color: '#0e5a3b' }}>
+              <Typography sx={{ fontWeight: 600, color: theme.palette.success.main }}>Certas:</Typography>
+              <Typography sx={{ color: theme.palette.success.main }}>
                 {currentQuestion.options
                   .filter((option) => option.correct)
                   .map((option) => option.text)
                   .join(' • ')}
               </Typography>
 
-              <Typography sx={{ fontWeight: 600, color: '#8f2d2d', mt: 1.5 }}>Erradas:</Typography>
-              <Typography sx={{ color: '#8f2d2d' }}>
+              <Typography sx={{ fontWeight: 600, color: theme.palette.error.main, mt: 1.5 }}>Erradas:</Typography>
+              <Typography sx={{ color: theme.palette.error.main }}>
                 {currentQuestion.options
                   .filter((option) => !option.correct)
                   .map((option) => option.text)

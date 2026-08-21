@@ -13,8 +13,8 @@ export const Homepage = ({ onStart }) => {
           <Typography variant="h3" component="h1" sx={{ fontWeight: 700, fontSize: '32px', fontFamily: 'PixelifySans' }}>
             Defesa Civil
           </Typography>
-          <Typography variant="h5" component="h2" sx={{ fontSize: '48px', fontFamily:'Inter' }}>
-            Treinamento
+          <Typography className='texto-estilizado' variant="h7" component="h2" sx={{ fontSize: '48px', fontFamily:'Inter', fontStyle: 'SemiBold', fontWeight: 600, }}>
+            TREINAMENTO
           </Typography>
         <Divider
           sx={{
