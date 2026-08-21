@@ -1,0 +1,205 @@
+import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography, LinearProgress } from '@mui/material'
+import { CheckCircle, Close } from '@mui/icons-material'
+import { useMemo, useState } from 'react'
+import { questions } from '../../data/questions'
+
+const { quizQuestions } = questions();
+
+const QuizPage = () => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [selectedAnswerId, setSelectedAnswerId] = useState(null)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [history, setHistory] = useState([])
+  const [quizFinished, setQuizFinished] = useState(false)
+
+  const currentQuestion = quizQuestions[currentQuestionIndex]
+
+  const score = useMemo(
+    () => history.filter((item) => item.isCorrect).length,
+    [history],
+  )
+
+  const handleAnswer = (option) => {
+    if (showFeedback) return
+
+    const isCorrect = option.correct
+    const questionSummary = {
+      question: currentQuestion.question,
+      selectedAnswer: option.text,
+      isCorrect,
+      correctAnswers: currentQuestion.options
+        .filter((item) => item.correct)
+        .map((item) => item.text),
+      allOptions: currentQuestion.options,
+    }
+
+    setSelectedAnswerId(option.id)
+    setShowFeedback(true)
+    setHistory((previous) => [...previous, questionSummary])
+  }
+
+  const handleNext = () => {
+    if (currentQuestionIndex === quizQuestions.length - 1) {
+      setQuizFinished(true)
+      return
+    }
+
+    setCurrentQuestionIndex((previous) => previous + 1)
+    setSelectedAnswerId(null)
+    setShowFeedback(false)
+  }
+
+  const resetQuiz = () => {
+    setCurrentQuestionIndex(0)
+    setSelectedAnswerId(null)
+    setShowFeedback(false)
+    setHistory([])
+    setQuizFinished(false)
+  }
+
+  if (quizFinished) {
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
+        <Card sx={{ width: '100%', maxWidth: 760, p: 2, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
+          <CardContent>
+            <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: '#0d2244' }}>
+              Resultado do Quiz
+            </Typography>
+
+            <Alert severity={score === quizQuestions.length ? 'success' : 'info'} sx={{ mb: 3 }}>
+              Você acertou {score} de {quizQuestions.length} perguntas.
+            </Alert>
+
+            <Stack spacing={2} sx={{ textAlign: 'left' }}>
+              {history.map((item, index) => (
+                <Box key={`${item.question}-${index}`} sx={{ border: '1px solid #dfe7f3', borderRadius: 2, p: 2, backgroundColor: '#f7faff' }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#102d5a', mb: 1 }}>
+                    {index + 1}. {item.question}
+                  </Typography>
+                  <Typography sx={{ color: item.isCorrect ? '#1b7f4d' : '#a33a35' }}>
+                    Sua resposta: {item.selectedAnswer}
+                  </Typography>
+                  <Typography sx={{ mt: 1 }}>Resposta correta: {item.correctAnswers.join(', ')}</Typography>
+                  <Chip
+                    label={item.isCorrect ? 'Correto' : 'Incorreto'}
+                    color={item.isCorrect ? 'success' : 'error'}
+                    size="small"
+                    sx={{ mt: 1 }}
+                  />
+                </Box>
+              ))}
+            </Stack>
+
+            <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
+              Refazer Quiz
+            </Button>
+          </CardContent>
+        </Card>
+      </Box>
+    )
+  }
+
+  return (
+    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
+      <Card sx={{ width: '100%', maxWidth: 760, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 2 }}>
+            <Typography variant="h5" sx={{ color: '#0d2244', fontWeight: 700 }}>
+              Quiz de Defesa Civil
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 8, minHeight: '16px' }}>
+            <Typography variant="body2" sx={{ color: '#153c73', fontWeight: 600 }}>
+              {currentQuestion?.level ?? '—'}
+            </Typography>
+            <Chip sx={{display: 'flex', alignItems: 'center'}} label={`${currentQuestionIndex + 1}/${quizQuestions.length}`} color="primary" />
+          </Box>
+
+          <Box sx={{ mb: 3 }}>
+            <LinearProgress
+              variant="determinate"
+              value={((currentQuestionIndex + 1) / quizQuestions.length) * 100}
+              sx={{ height: 16, borderRadius: 2, backgroundColor: '#eaf3ff', '& .MuiLinearProgress-bar': { backgroundColor: '#1976d2' } }}
+            />
+          </Box>
+
+          <Typography variant="h6" sx={{ mb: 3, color: '#153c73', fontWeight: 600, textAlign: 'left' }}>
+            {currentQuestion.question}
+          </Typography>
+
+          <Stack spacing={2}>
+            {currentQuestion.options.map((option) => {
+              const isSelected = selectedAnswerId === option.id
+              const isCorrectOption = option.correct
+              const showCorrectState = showFeedback && isCorrectOption
+              const showWrongState = showFeedback && isSelected && !option.correct
+
+              return (
+                <Button
+                  key={option.id}
+                  variant={isSelected ? 'contained' : 'outlined'}
+                  color={showCorrectState ? 'success' : showWrongState ? 'error' : 'primary'}
+                  onClick={() => handleAnswer(option)}
+                  sx={{
+                    justifyContent: 'flex-start',
+                    py: 1.8,
+                    px: 2,
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    {showCorrectState && <CheckCircle />}
+                    {showWrongState && <Close />}
+                    <span>{option.text}</span>
+                  </Box>
+                </Button>
+              )
+            })}
+          </Stack>
+
+          {showFeedback && (
+            <Box sx={{ mt: 3, p: 2.5, borderRadius: 2, backgroundColor: '#edf6ff', border: '1px solid #d2e5ff' }}>
+              <Typography sx={{ fontWeight: 700, mb: 1, color: '#12325c' }}>
+                Feedback
+              </Typography>
+
+              <Typography sx={{ color: '#12325c', mb: 1 }}>
+                {history[history.length - 1]?.isCorrect
+                  ? 'Resposta correta! Você acertou esta questão.'
+                  : 'Resposta incorreta. Veja quais opções estavam certas e erradas.'}
+              </Typography>
+
+              <Divider sx={{ my: 1.5 }} />
+
+              <Typography sx={{ fontWeight: 600, color: '#0e5a3b' }}>Certas:</Typography>
+              <Typography sx={{ color: '#0e5a3b' }}>
+                {currentQuestion.options
+                  .filter((option) => option.correct)
+                  .map((option) => option.text)
+                  .join(' • ')}
+              </Typography>
+
+              <Typography sx={{ fontWeight: 600, color: '#8f2d2d', mt: 1.5 }}>Erradas:</Typography>
+              <Typography sx={{ color: '#8f2d2d' }}>
+                {currentQuestion.options
+                  .filter((option) => !option.correct)
+                  .map((option) => option.text)
+                  .join(' • ')}
+              </Typography>
+            </Box>
+          )}
+
+          {showFeedback && (
+            <Button variant="contained" onClick={handleNext} sx={{ mt: 3 }}>
+              {currentQuestionIndex === quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima pergunta'}
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
+  )
+}
+
+export default QuizPage
