@@ -198,3 +198,24 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+.texto-estilizado {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  
+  letter-spacing: 2px;
+
+  background: linear-gradient(353.96deg, rgba(1, 32, 63, 0.31) -22.38%, #FF4F02 39.18%);
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  
+  display: inline-block; 
+}
