@@ -1,3 +1,4 @@
+import { PlayArrowRounded } from '@mui/icons-material'
 import { Box, Button, TextField, Typography } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -44,15 +45,24 @@ const StartForm = ({ onStart }) => {
             slotProps={{ textField: { fullWidth: true } }}
           />
         </LocalizationProvider>
-
         <Button
           variant="contained"
           size="large"
           disabled={!isReadyToStart}
           onClick={onStart}
-          sx={{ mt: 1 }}
+          sx={{
+            mt: 1,
+            maxWidth: '80vw',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mx: 'auto' // Centraliza o botão horizontalmente no container
+          }}
         >
-          Iniciar Quiz
+          <PlayArrowRounded sx={{ mr: 1, height: '40px', width: '40px' }} />
+          <Typography sx={{ fontFamily: 'PixelifySans', fontSize: '24px' }}>
+            Iniciar Quiz
+          </Typography>
         </Button>
       </Box>
     </div>

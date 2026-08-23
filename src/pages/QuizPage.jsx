@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography, LinearProgress } from '@mui/material'
+import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography, LinearProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { CheckCircle, Close } from '@mui/icons-material'
 import { useMemo, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
@@ -113,12 +113,12 @@ const QuizPage = () => {
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 8, minHeight: '16px' }}>
             <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontWeight: 600 }}>
-              {currentQuestion?.level ?? '—'}
+              {currentQuestion?.level ?? ''}
             </Typography>
-            <Chip sx={{display: 'flex', alignItems: 'center'}} label={`${currentQuestionIndex + 1}/${quizQuestions.length}`} color="primary" />
+            <Chip sx={{ display: 'flex', maxHeight: '28px', alignItems: 'center' }} label={`${currentQuestionIndex + 1}/${quizQuestions.length}`} color="primary" />
           </Box>
 
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 3, mt: 2 }}>
             <LinearProgress
               variant="determinate"
               value={((currentQuestionIndex + 1) / quizQuestions.length) * 100}
@@ -127,7 +127,7 @@ const QuizPage = () => {
           </Box>
 
           <Typography variant="h6" sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left' }}>
-            {currentQuestion.question}
+            {currentQuestion.id}. {currentQuestion.question}
           </Typography>
 
           <Stack spacing={2}>
@@ -141,7 +141,7 @@ const QuizPage = () => {
                 <Button
                   key={option.id}
                   variant={isSelected ? 'contained' : 'outlined'}
-                  color={showCorrectState ? 'success' : showWrongState ? 'error' : 'primary'}
+                  color={showCorrectState ? 'success' : showWrongState ? 'error' : 'text.primary'}
                   onClick={() => handleAnswer(option)}
                   sx={{
                     justifyContent: 'flex-start',
@@ -149,26 +149,45 @@ const QuizPage = () => {
                     px: 2,
                     textTransform: 'none',
                     borderRadius: 2,
-                    fontWeight: 500,
+                    fontWeight: 600,
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     {showCorrectState && <CheckCircle />}
                     {showWrongState && <Close />}
-                    <span>{option.text}</span>
+
+                    <Typography>{option.id.toUpperCase()}</Typography>
+                    <Divider
+                      orientation="vertical"
+                      flexItem
+                      sx={{
+                        borderColor: 'grey.600',
+                      }}
+                    />
+                    <Typography sx={{ display: 'flex', alignSelf: 'center' }} >{option.text}</Typography>
                   </Box>
                 </Button>
               )
             })}
           </Stack>
+          <Dialog
+            open={Boolean(showFeedback)}
+            onClose={() => { }} // Opcional: função para fechar ao clicar fora, se desejar
+            maxWidth="xs"
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: '16px',
+                p: 1.5
+              }
+            }}
+          >
+            <DialogTitle sx={{ fontWeight: 700, pb: 0, color: theme.palette.text.primary }}>
+              Feedback
+            </DialogTitle>
 
-          {showFeedback && (
-            <Box sx={{ mt: 3, p: 2.5, borderRadius: 2, backgroundColor: theme.palette.info.light, border: `1px solid ${theme.palette.info.main}` }}>
-              <Typography sx={{ fontWeight: 700, mb: 1, color: theme.palette.text.primary }}>
-                Feedback
-              </Typography>
-
-              <Typography sx={{ color: theme.palette.text.primary, mb: 1 }}>
+            <DialogContent>
+              <Typography sx={{ color: theme.palette.text.primary, my: 1 }}>
                 {history[history.length - 1]?.isCorrect
                   ? 'Resposta correta! Você acertou esta questão.'
                   : 'Resposta incorreta. Veja quais opções estavam certas e erradas.'}
@@ -176,7 +195,9 @@ const QuizPage = () => {
 
               <Divider sx={{ my: 1.5 }} />
 
-              <Typography sx={{ fontWeight: 600, color: theme.palette.success.main }}>Certas:</Typography>
+              <Typography sx={{ fontWeight: 600, color: theme.palette.success.main }}>
+                Certas:
+              </Typography>
               <Typography sx={{ color: theme.palette.success.main }}>
                 {currentQuestion.options
                   .filter((option) => option.correct)
@@ -184,21 +205,29 @@ const QuizPage = () => {
                   .join(' • ')}
               </Typography>
 
-              <Typography sx={{ fontWeight: 600, color: theme.palette.error.main, mt: 1.5 }}>Erradas:</Typography>
+              <Typography sx={{ fontWeight: 600, color: theme.palette.error.main, mt: 1.5 }}>
+                Erradas:
+              </Typography>
               <Typography sx={{ color: theme.palette.error.main }}>
                 {currentQuestion.options
                   .filter((option) => !option.correct)
                   .map((option) => option.text)
                   .join(' • ')}
               </Typography>
-            </Box>
-          )}
+            </DialogContent>
 
-          {showFeedback && (
-            <Button variant="contained" onClick={handleNext} sx={{ mt: 3 }}>
-              {currentQuestionIndex === quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima pergunta'}
-            </Button>
-          )}
+            <DialogActions sx={{ p: 2, pt: 0 }}>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                fullWidth
+                sx={{ minHeight: '46px' }}
+              >
+                {currentQuestionIndex === quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima pergunta'}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </CardContent>
       </Card>
     </Box>

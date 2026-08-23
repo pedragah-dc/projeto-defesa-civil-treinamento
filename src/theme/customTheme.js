@@ -32,7 +32,7 @@ export const theme = createTheme({
       main: '#3b82f6',
     },
     success: {
-      main: '#10b981',
+      main: '#1ab549',
     },
     // Tons Neutros para Textos e Bordas
     grey: {
