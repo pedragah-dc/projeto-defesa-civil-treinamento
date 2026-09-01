@@ -1,6 +1,6 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
-export const theme = createTheme({
+let baseTheme = createTheme({
   palette: {
     // Cor Principal da Marca (Usada em botões principais, destaques, etc)
     primary: {
@@ -56,5 +56,34 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    // sensible defaults for web apps that will be scaled responsively
+    h1: {
+      fontSize: '2.5rem',
+      '@media (max-width:600px)': {
+        fontSize: '1.6rem'
+      }
+    },
+    h2: {
+      fontSize: '1.5rem',
+      '@media (max-width:600px)': {
+        fontSize: '1.15rem'
+      }
+    },
+    h6: {
+      fontSize: '1.125rem',
+      '@media (max-width:600px)': {
+        fontSize: '0.95rem'
+      }
+    },
+    body1: {
+      fontSize: '1rem',
+      '@media (max-width:600px)': {
+        fontSize: '0.95rem'
+      }
+    }
   },
 });
+
+baseTheme = responsiveFontSizes(baseTheme);
+
+export const theme = baseTheme;

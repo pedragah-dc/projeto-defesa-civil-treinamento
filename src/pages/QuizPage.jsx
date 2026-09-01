@@ -136,7 +136,7 @@ const QuizPage = () => {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
       <Card sx={{ width: '100%', maxWidth: 760, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 2 }}>
             <Typography variant="h5" sx={{ color: theme.palette.text.primary, fontWeight: 700 }}>
               Quiz de Defesa Civil
@@ -153,22 +153,24 @@ const QuizPage = () => {
             <LinearProgress
               variant="determinate"
               value={((currentQuestionIndex + 1) / quizQuestions.length) * 100}
-              sx={{ height: 16, borderRadius: 2, backgroundColor: theme.palette.action.hover, '& .MuiLinearProgress-bar': { backgroundColor: theme.palette.primary.main } }}
+              sx={{ height: { xs: 10, sm: 12, md: 16 }, borderRadius: 2, backgroundColor: theme.palette.action.hover, '& .MuiLinearProgress-bar': { backgroundColor: theme.palette.primary.main } }}
             />
           </Box>
+            <Typography
+              variant="h6"
+              sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left', fontSize: { xs: '1rem', sm: '1.05rem', md: '1.15rem' } }}
+            >
+              {currentQuestion.id}. {currentQuestion.question}
+            </Typography>
 
-          <Typography variant="h6" sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left' }}>
-            {currentQuestion.id}. {currentQuestion.question}
-          </Typography>
-
-          {currentQuestion.image && (
-            <Box
-              component="img"
-              src={currentQuestion.image}
-              alt={`Imagem da pergunta ${currentQuestion.id}`}
-              sx={{ maxHeight: 120, objectFit: 'contain', mb: 3, borderRadius: 2 }}
-            />
-          )}
+            {currentQuestion.image && (
+              <Box
+                component="img"
+                src={currentQuestion.image}
+                alt={`Imagem da pergunta ${currentQuestion.id}`}
+                sx={{ width: '100%', maxHeight: { xs: 120, sm: 220, md: 360 }, objectFit: 'contain', mb: 3, borderRadius: 2 }}
+              />
+            )}
 
           <Stack spacing={2}>
             {currentQuestion.options.map((option) => {
@@ -185,11 +187,12 @@ const QuizPage = () => {
                   onClick={() => handleAnswer(option)}
                   sx={{
                     justifyContent: 'flex-start',
-                    py: 1.8,
-                    px: 2,
+                    py: { xs: 1, sm: 1.4 },
+                    px: { xs: 1.25, sm: 2 },
                     textTransform: 'none',
                     borderRadius: 2,
                     fontWeight: 600,
+                    fontSize: { xs: '0.95rem', sm: '1rem' }
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -287,7 +290,7 @@ const QuizPage = () => {
                 variant="contained"
                 onClick={handleNext}
                 fullWidth
-                sx={{ minHeight: '46px' }}
+                sx={{ minHeight: { xs: 40, sm: 46 } }}
               >
                 {currentQuestionIndex === quizQuestions.length - 1 ? 'Ver resultado' : 'Próxima pergunta'}
               </Button>
