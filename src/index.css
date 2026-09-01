@@ -60,7 +60,7 @@ body {
 }
 
 #root {
-  max-width: 100%;
+  width: 100%;
   min-height: 100vh;
   margin: 0 auto;
   text-align: center;
@@ -70,6 +70,7 @@ body {
   box-sizing: border-box;
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   color: var(--text);
+  overflow-x: hidden;
 }
 
 h1,

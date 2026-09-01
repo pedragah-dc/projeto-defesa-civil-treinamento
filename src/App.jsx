@@ -18,7 +18,16 @@ function StartFormWrapper() {
 function App() {
   return (
     <BrowserRouter>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '36px' }}>
+      <div className="root" style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        width: '100%',
+        minHeight: '100vh',
+        boxSizing: 'border-box',
+        padding: 0,
+        margin: 0
+        }}>
         <Routes>
           <Route path="/" element={<HomepageWrapper />} />
           {/* <Route path="/" element={<ResultPage />} /> */}
