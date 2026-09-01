@@ -161,6 +161,15 @@ const QuizPage = () => {
             {currentQuestion.id}. {currentQuestion.question}
           </Typography>
 
+          {currentQuestion.image && (
+            <Box
+              component="img"
+              src={currentQuestion.image}
+              alt={`Imagem da pergunta ${currentQuestion.id}`}
+              sx={{ maxHeight: 120, objectFit: 'contain', mb: 3, borderRadius: 2 }}
+            />
+          )}
+
           <Stack spacing={2}>
             {currentQuestion.options.map((option) => {
               const isSelected = selectedAnswerId === option.id

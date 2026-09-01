@@ -1,3 +1,9 @@
+import terremoto from '../src/assets/images/placas/terremoto.png'
+// import erosao from '../src/assets/images/questions/'
+import ventosCosteiros from '../src/assets/images/placas/ventos_costeiros.png'
+import friagem from '../src/assets/images/placas/friagem.png'
+import satelite from '../src/assets/images/placas/satelites.png'
+
 export const questions = () => {
     const quizQuestions = [
         // NÍVEL FÁCIL
@@ -278,6 +284,7 @@ export const questions = () => {
         {
             id: 16,
             question: 'Qual é o código do COBRADE para Terremoto?',
+            image: terremoto,
             options: [
                 { id: 'a', text: '1.1.1.1.0', correct: false },
                 { id: 'b', text: '1.1.1.2.0', correct: false },
@@ -296,6 +303,7 @@ export const questions = () => {
         {
             id: 17,
             question: 'Qual é o código do COBRADE para Erosão Costeira / Marinha?',
+            // image: q17,
             options: [
                 { id: 'a', text: '1.1.1.1.0', correct: false },
                 { id: 'b', text: '1.1.4.1.0', correct: true },
@@ -314,6 +322,7 @@ export const questions = () => {
         {
             id: 18,
             question: 'Qual é o código do COBRADE para Ventos Costeiros (mobilidade de dunas)?',
+            image: ventosCosteiros,
             options: [
                 { id: 'a', text: '1.3.1.1.1', correct: true },
                 { id: 'b', text: '1.3.1.1.2', correct: false },
@@ -332,6 +341,7 @@ export const questions = () => {
         {
             id: 19,
             question: 'Qual é o código do COBRADE para Friagem?',
+            image: friagem,
             options: [
                 { id: 'a', text: '1.3.3.2.1', correct: true },
                 { id: 'b', text: '1.4.1.3.1', correct: false },
@@ -350,6 +360,7 @@ export const questions = () => {
         {
             id: 20,
             question: 'Qual é o código do COBRADE para Queda de satélite (radionuclídeos)?',
+            image: satelite,
             options: [
                 { id: 'a', text: '2.1.1.1.0', correct: true },
                 { id: 'b', text: '2.1.2.1.0', correct: false },
