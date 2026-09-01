@@ -1,5 +1,10 @@
 import { SyncOutlined } from "@mui/icons-material"
 import { Box, Button, Divider, Typography } from "@mui/material"
+import logoLabDesign from '../assets/images/logos/logo_labdesign.png'
+import logoDefesaCivil from '../assets/images/logos/logo_defesa_civil.png'
+import sparklesIcon from '../assets/images/icons/sparkles-sharp.png'
+import checkIcon from '../assets/images/icons/check-icon.png'
+import erroIcon from '../assets/images/icons/erro-icon.png'
 
 const ResultPage = () => {
 
@@ -11,8 +16,8 @@ const ResultPage = () => {
         <Box sx={{ color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px' }}>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                <img width="64px" src="src/assets/images/logos/logo_labdesign.png" alt="Logotipo da Defesa Civil" />
-                <img width="64px" src="src/assets/images/logos/logo_defesa_civil.png" alt="Logotipo da Defesa Civil" />
+                <img width="64px" src={logoLabDesign} alt="Logotipo da Defesa Civil" />
+                <img width="64px" src={logoDefesaCivil} alt="Logotipo da Defesa Civil" />
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}>
@@ -91,7 +96,7 @@ const ResultPage = () => {
                 borderRadius: '16px'
             }}>
                 <Box>
-                    <img src="src/assets/images/icons/sparkles-sharp.png" style={{ width: '36px' }} />
+                    <img src={sparklesIcon} style={{ width: '36px' }} />
                     <Typography>20/20</Typography>
                     <Typography>RESPONDIDAS</Typography>
                 </Box>
@@ -102,7 +107,7 @@ const ResultPage = () => {
                     backgroundColor: '#ffffff46'
                 }} />
                 <Box>
-                    <img src="src/assets/images/icons/check-icon.png" style={{ width: '36px' }} />
+                    <img src={checkIcon} style={{ width: '36px' }} />
                     <Typography>20/20</Typography>
                     <Typography>ACERTOS</Typography>
                 </Box>
@@ -113,7 +118,7 @@ const ResultPage = () => {
                     backgroundColor: '#ffffff46'
                 }} />
                 <Box>
-                    <img src="src/assets/images/icons/erro-icon.png" style={{ width: '36px' }} />
+                    <img src={erroIcon} style={{ width: '36px' }} />
                     <Typography>20/20</Typography>
                     <Typography>ERROS</Typography>
                 </Box>
@@ -129,7 +134,7 @@ const ResultPage = () => {
                 margin: '38px',
                 borderRadius: '16px'
             }}>
-                <img src="src/assets/images/icons/sparkles-sharp.png" />
+                <img src={sparklesIcon} />
                 <Typography>Você está cada vez mais preparado para proteger e agir com excelência!</Typography>
             </Box>
 
