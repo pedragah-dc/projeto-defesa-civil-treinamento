@@ -3,11 +3,34 @@ import { Box, Button, TextField, Typography } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const StartForm = ({ onStart }) => {
   const [name, setName] = useState('')
   const [date, setDate] = useState(null)
+
+  // Restore saved start form if present
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('startForm')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed?.name) setName(parsed.name)
+        if (parsed?.date) setDate(dayjs(parsed.date))
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+  }, [])
+
+  // Persist form to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('startForm', JSON.stringify({ name, date: date ? dayjs(date).toISOString() : null }))
+    } catch (e) {
+      // ignore
+    }
+  }, [name, date])
 
   const isReadyToStart = name.trim().length > 0 && dayjs(date).isValid()
 

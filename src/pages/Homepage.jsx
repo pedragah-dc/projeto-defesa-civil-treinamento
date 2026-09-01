@@ -1,13 +1,15 @@
 import { PlayArrowRounded } from '@mui/icons-material'
-import { Button, Divider, Typography } from '@mui/material'
+import { Box, Button, Divider, Typography } from '@mui/material'
+import logoLabDesign from '../assets/images/logos/logo_labdesign.png'
+import logoDefesaCivil from '../assets/images/logos/logo_defesa_civil.png'
 
 export const Homepage = ({ onStart }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', padding: '36px' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',  padding: '36px' }}>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '36px' }}>
-        <img width="64px" src="src/assets/images/logos/logo_labdesign.png" alt="Logotipo da Defesa Civil" />
-        <img width="64px" src="src/assets/images/logos/logo_defesa_civil.png" alt="Logotipo da Defesa Civil" />
+        <img width="64px" src={logoLabDesign} alt="Logotipo da Defesa Civil" />
+        <img width="64px" src={logoDefesaCivil} alt="Logotipo da Defesa Civil" />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: '6px', width: '100%', textAlign: 'left' }}>
@@ -46,6 +48,6 @@ export const Homepage = ({ onStart }) => {
           </Typography>
         </Button>
       </div>
-    </div>
+    </Box>
   )
 }

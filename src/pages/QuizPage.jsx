@@ -1,17 +1,27 @@
 import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography, LinearProgress, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { CheckCircle, Close } from '@mui/icons-material'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { questions } from '../../data/questions'
 
 const { quizQuestions } = questions();
 
 const QuizPage = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [selectedAnswerId, setSelectedAnswerId] = useState(null)
-  const [showFeedback, setShowFeedback] = useState(false)
-  const [history, setHistory] = useState([])
-  const [quizFinished, setQuizFinished] = useState(false)
+  
+  const savedState = (() => {
+    try {
+      const raw = localStorage.getItem('quizState')
+      return raw ? JSON.parse(raw) : null
+    } catch (e) {
+      return null
+    }
+  })()
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => savedState?.currentQuestionIndex ?? 0)
+  const [selectedAnswerId, setSelectedAnswerId] = useState(() => savedState?.selectedAnswerId ?? null)
+  const [showFeedback, setShowFeedback] = useState(() => savedState?.showFeedback ?? false)
+  const [history, setHistory] = useState(() => savedState?.history ?? [])
+  const [quizFinished, setQuizFinished] = useState(() => savedState?.quizFinished ?? false)
 
   const currentQuestion = quizQuestions[currentQuestionIndex]
 
@@ -25,7 +35,7 @@ const QuizPage = () => {
   const handleAnswer = (option) => {
     if (showFeedback) return
 
-    const isCorrect = option.correct
+    const isCorrect = option.correct;
     const questionSummary = {
       question: currentQuestion.question,
       selectedAnswer: option.text,
@@ -52,13 +62,34 @@ const QuizPage = () => {
     setShowFeedback(false)
   }
 
-  const resetQuiz = () => {
-    setCurrentQuestionIndex(0)
-    setSelectedAnswerId(null)
-    setShowFeedback(false)
-    setHistory([])
-    setQuizFinished(false)
-  }
+  // const resetQuiz = () => {
+  //   setCurrentQuestionIndex(0)
+  //   setSelectedAnswerId(null)
+  //   setShowFeedback(false)
+  //   setHistory([])
+  //   setQuizFinished(false)
+  //   try {
+  //     localStorage.removeItem('quizState')
+  //   } catch (e) {
+  //     // ignore
+  //   }
+  // }
+
+  // Persist quiz state on changes
+  useEffect(() => {
+    try {
+      const toSave = {
+        currentQuestionIndex,
+        selectedAnswerId,
+        showFeedback,
+        history,
+        quizFinished,
+      }
+      localStorage.setItem('quizState', JSON.stringify(toSave))
+    } catch (e) {
+      // ignore
+    }
+  }, [currentQuestionIndex, selectedAnswerId, showFeedback, history, quizFinished])
 
   if (quizFinished) {
     return (
@@ -92,10 +123,10 @@ const QuizPage = () => {
                 </Box>
               ))}
             </Stack>
-
+{/* 
             <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
               Refazer Quiz
-            </Button>
+            </Button> */}
           </CardContent>
         </Card>
       </Box>
@@ -164,16 +195,17 @@ const QuizPage = () => {
                         borderColor: 'grey.600',
                       }}
                     />
-                    <Typography sx={{ display: 'flex', alignSelf: 'center' }} >{option.text}</Typography>
+                    <Typography sx={{ display: 'flex', alignSelf: 'center' }}>{option.text}</Typography>
                   </Box>
                 </Button>
               )
             })}
           </Stack>
+    
           <Dialog
             open={Boolean(showFeedback)}
-            onClose={() => { }} // Opcional: função para fechar ao clicar fora, se desejar
-            maxWidth="xs"
+            onClose={() => { }}
+            maxWidth="sm"
             fullWidth
             PaperProps={{
               sx: {
@@ -182,41 +214,66 @@ const QuizPage = () => {
               }
             }}
           >
-            <DialogTitle sx={{ fontWeight: 700, pb: 0, color: theme.palette.text.primary }}>
-              Feedback
+            <DialogTitle sx={{ fontWeight: 700, pb: 0, color: history[history.length - 1]?.isCorrect ? 'success.main': 'error.main' }}>
+              {history[history.length - 1]?.isCorrect
+                  ?  ' Resposta Correta!' : ' Resposta Incorreta'}!!
             </DialogTitle>
 
             <DialogContent>
-              <Typography sx={{ color: theme.palette.text.primary, my: 1 }}>
+              <Typography variant="body2" sx={{ color: theme.palette.text.secondary, my: 1 }}>
                 {history[history.length - 1]?.isCorrect
-                  ? 'Resposta correta! Você acertou esta questão.'
-                  : 'Resposta incorreta. Veja quais opções estavam certas e erradas.'}
+                  ? 'Parabéns! Você escolheu a alternativa certa.'
+                  : 'Veja abaixo a explicação das alternativas para entender melhor.'}
               </Typography>
 
               <Divider sx={{ my: 1.5 }} />
 
-              <Typography sx={{ fontWeight: 600, color: theme.palette.success.main }}>
-                Certas:
-              </Typography>
-              <Typography sx={{ color: theme.palette.success.main }}>
+              {/* Explicação da Resposta Correta */}
+              <Box sx={{ mb: 2 }}>
+                <Typography sx={{ fontWeight: 700, color: theme.palette.success.main, mb: 0.5 }}>
+                  Por que a resposta certa está correta:
+                </Typography>
                 {currentQuestion.options
                   .filter((option) => option.correct)
-                  .map((option) => option.text)
-                  .join(' • ')}
-              </Typography>
+                  .map((option) => (
+                    <Box key={option.id} sx={{ pl: 1 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                        {option.id.toUpperCase()}) {option.text}
+                      </Typography>
+                      {currentQuestion.explanation?.correct && (
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 0.5 }}>
+                          • {currentQuestion.explanation.correct}
+                        </Typography>
+                      )}
+                    </Box>
+                  ))}
+              </Box>
 
-              <Typography sx={{ fontWeight: 600, color: theme.palette.error.main, mt: 1.5 }}>
-                Erradas:
-              </Typography>
-              <Typography sx={{ color: theme.palette.error.main }}>
-                {currentQuestion.options
-                  .filter((option) => !option.correct)
-                  .map((option) => option.text)
-                  .join(' • ')}
-              </Typography>
+              {/* Explicação das Respostas Incorretas */}
+              <Box>
+                <Typography sx={{ fontWeight: 700, color: theme.palette.error.main, mb: 0.5 }}>
+                  Por que as outras estão erradas:
+                </Typography>
+                <Stack spacing={1} sx={{ pl: 1 }}>
+                  {currentQuestion.options
+                    .filter((option) => !option.correct)
+                    .map((option) => (
+                      <Box key={option.id}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                          {option.id.toUpperCase()}) {option.text}
+                        </Typography>
+                        {currentQuestion.explanation?.incorrect?.[option.id] && (
+                          <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                            • {currentQuestion.explanation.incorrect[option.id]}
+                          </Typography>
+                        )}
+                      </Box>
+                    ))}
+                </Stack>
+              </Box>
             </DialogContent>
 
-            <DialogActions sx={{ p: 2, pt: 0 }}>
+            <DialogActions sx={{ p: 2, pt: 1 }}>
               <Button
                 variant="contained"
                 onClick={handleNext}
