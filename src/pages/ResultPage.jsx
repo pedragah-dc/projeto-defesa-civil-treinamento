@@ -1,15 +1,35 @@
 import { SyncOutlined } from "@mui/icons-material"
-import { Box, Button, Divider, Typography } from "@mui/material"
+import { alpha, Box, Button, Divider, Typography } from "@mui/material"
 import logoLabDesign from '../assets/images/logos/logo_labdesign.png'
 import logoDefesaCivil from '../assets/images/logos/logo_defesa_civil.png'
 import sparklesIcon from '../assets/images/icons/sparkles-sharp.png'
 import checkIcon from '../assets/images/icons/check-icon.png'
 import erroIcon from '../assets/images/icons/erro-icon.png'
+import { questions } from '../../data/questions'
 
-const ResultPage = () => {
+const { quizQuestions } = questions()
+
+const ResultPage = ({ onReviewAnswers }) => {
+    const savedState = (() => {
+        try {
+            const raw = localStorage.getItem('quizState')
+            return raw ? JSON.parse(raw) : null
+        } catch (e) {
+            return null
+        }
+    })()
+
+    const history = savedState?.history ?? []
+    const totalQuestions = quizQuestions.length
+    const correctAnswers = history.filter((item) => item.isCorrect).length
+    const answeredCount = history.length
+    const wrongAnswers = Math.max(answeredCount - correctAnswers, 0)
+    const performance = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0
+
+    const performanceLabel = performance >= 80 ? 'Excelente!' : performance >= 60 ? 'Muito bom!' : performance >= 40 ? 'Bom esforço!' : 'Continue treinando!'
 
     const handleClickRevisarRespostas = (() => {
-        
+        onReviewAnswers();
     });
 
     return (
@@ -22,7 +42,7 @@ const ResultPage = () => {
 
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '6px', width: '100%', textAlign: 'left' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: '6px', width: '100%', textAlign: 'left' }} >
-                    <Typography variant="h3" component="h1" sx={{ alignSelf: 'center', fontWeight: 700, fontSize: '32px', fontFamily: 'PixelifySans' }}>
+                    <Typography variant="h3" sx={{ alignSelf: 'center', fontWeight: 700, fontSize: '32px', fontFamily: 'PixelifySans' }}>
                         Missão concluída
                     </Typography>
                 </div>
@@ -47,24 +67,23 @@ const ResultPage = () => {
             </div>
 
             <Box
-                sx={{
+                sx={(theme) => ({
                     display: 'flex',
                     justifyContent: 'center',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    my: '48px',
+                    my: '36px',
                     height: '25vh',
                     width: '100vw',
                     backgroundColor: 'text.primary',
-
-                    // Borda fina com o gradiente desejado
-                    borderStyle: 'solid',
-                    borderWidth: '2px',
+                    // Borda apenas no topo e na base
+                    borderTop: '2px solid',
+                    borderBottom: '2px solid',
                     borderColor: 'primary.main',
-
-                    // Efeito de brilho desfocado (Blur Glow)
-                    filter: 'drop-shadow(0px 0px 48px rgba(255, 79, 2, 0.6))',
-                }}
+                    // Efeito Blur/Degradê partindo do topo e da base para o interior
+                    boxShadow: `inset 0 16px 20px -10px ${alpha(theme.palette.primary.main, 0.6)}, 
+                    inset 0 -16px 20px -10px ${alpha(theme.palette.primary.main, 0.6)}`,
+                })}
             >
                 <Typography sx={{
                     color: 'background.paper',
@@ -75,16 +94,20 @@ const ResultPage = () => {
                 </Typography>
                 <Typography className="texto-estilizado" sx={{
                     fontWeight: 700,
-                    fontSize: '80px'
+                    fontSize: '76px',
+                    lineHeight: 1,
+                    '@media (max-width: 600px)': {
+                        fontSize: '76px'
+                    }
                 }}>
-                    90%
+                    {performance}%
                 </Typography>
                 <Typography sx={{
                     fontWeight: 700,
                     fontSize: '24px',
                     color: 'success.main'
                 }}>
-                    Excelente!
+                    {performanceLabel}
                 </Typography>
             </Box>
             <Box sx={{
@@ -92,12 +115,12 @@ const ResultPage = () => {
                 flexDirection: 'row',
                 gap: '16px',
                 backgroundColor: '#6886b363',
-                padding: '28px',
+                padding: '18px',
                 borderRadius: '16px'
             }}>
                 <Box>
                     <img src={sparklesIcon} style={{ width: '36px' }} />
-                    <Typography>20/20</Typography>
+                    <Typography>{answeredCount}/{totalQuestions}</Typography>
                     <Typography>RESPONDIDAS</Typography>
                 </Box>
                 <Box sx={{
@@ -108,7 +131,7 @@ const ResultPage = () => {
                 }} />
                 <Box>
                     <img src={checkIcon} style={{ width: '36px' }} />
-                    <Typography>20/20</Typography>
+                    <Typography>{correctAnswers}/{totalQuestions}</Typography>
                     <Typography>ACERTOS</Typography>
                 </Box>
                 <Box sx={{
@@ -119,7 +142,7 @@ const ResultPage = () => {
                 }} />
                 <Box>
                     <img src={erroIcon} style={{ width: '36px' }} />
-                    <Typography>20/20</Typography>
+                    <Typography>{wrongAnswers}/{totalQuestions}</Typography>
                     <Typography>ERROS</Typography>
                 </Box>
             </Box>
@@ -130,8 +153,8 @@ const ResultPage = () => {
                 flexDirection: 'row',
                 gap: '16px',
                 backgroundColor: '#6886b363',
-                padding: '28px',
-                margin: '38px',
+                padding: '24px',
+                margin: '24px',
                 borderRadius: '16px'
             }}>
                 <img src={sparklesIcon} />
@@ -141,15 +164,15 @@ const ResultPage = () => {
             <Button
                 variant="contained"
                 size="large"
-                onClick={ handleClickRevisarRespostas }
+                onClick={handleClickRevisarRespostas}
                 sx={{
-                    maxWidth: '60vw',
+                    maxWidth: '50vw',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderRadius: '16px'
+                    borderRadius: '6px'
                 }}
-                >
+            >
                 <SyncOutlined sx={{ mr: 1, height: '40px', width: '40px' }} />
                 <Typography sx={{
                     display: 'flex',

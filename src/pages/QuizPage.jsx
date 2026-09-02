@@ -2,6 +2,7 @@ import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, Typography
 import { CheckCircle, Close } from '@mui/icons-material'
 import { useMemo, useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { useNavigate } from 'react-router-dom'
 import { questions } from '../../data/questions'
 
 const { quizQuestions } = questions();
@@ -26,6 +27,7 @@ const QuizPage = () => {
   const currentQuestion = quizQuestions[currentQuestionIndex]
 
   const theme = useTheme()
+  const navigate = useNavigate()
 
   const score = useMemo(
     () => history.filter((item) => item.isCorrect).length,
@@ -54,6 +56,7 @@ const QuizPage = () => {
   const handleNext = () => {
     if (currentQuestionIndex === quizQuestions.length - 1) {
       setQuizFinished(true)
+      navigate('/results', { replace: true })
       return
     }
 

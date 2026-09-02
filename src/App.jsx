@@ -4,6 +4,7 @@ import StartForm from './pages/StartForm'
 import QuizPage from './pages/QuizPage'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import ResultPage from './pages/ResultPage'
+import ReviewAnswersPage from './pages/ReviewAnswersPage'
 
 function HomepageWrapper() {
   const navigate = useNavigate()
@@ -13,6 +14,15 @@ function HomepageWrapper() {
 function StartFormWrapper() {
   const navigate = useNavigate()
   return <StartForm onStart={() => navigate('/quiz')} />
+}
+
+function ResultWrapper() {
+  const navigate = useNavigate()
+  return <ResultPage onReviewAnswers={() => navigate('/review-answers')} />
+}
+
+function ReviewAnswersWrapper() {
+  return <ReviewAnswersPage />
 }
 
 function App() {
@@ -30,10 +40,11 @@ function App() {
         }}>
         <Routes>
           <Route path="/" element={<HomepageWrapper />} />
-          {/* <Route path="/" element={<ResultPage />} /> */}
           
           <Route path="/form" element={<StartFormWrapper />} />
           <Route path="/quiz" element={<QuizPage />} />
+          <Route path="/results" element={<ResultWrapper />} />
+          <Route path="/review-answers" element={<ReviewAnswersWrapper />} />
         </Routes>
       </div>
     </BrowserRouter>
