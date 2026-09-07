@@ -8,7 +8,7 @@ import { questions } from '../../data/questions'
 const { quizQuestions } = questions();
 
 const QuizPage = () => {
-  
+
   const savedState = (() => {
     try {
       const raw = localStorage.getItem('quizState')
@@ -39,6 +39,7 @@ const QuizPage = () => {
 
     const isCorrect = option.correct;
     const questionSummary = {
+      id: currentQuestion.id,
       question: currentQuestion.question,
       selectedAnswer: option.text,
       isCorrect,
@@ -55,6 +56,20 @@ const QuizPage = () => {
 
   const handleNext = () => {
     if (currentQuestionIndex === quizQuestions.length - 1) {
+      // Ensure final state (including latest history) is persisted
+      try {
+        const toSave = {
+          currentQuestionIndex,
+          selectedAnswerId,
+          showFeedback,
+          history,
+          quizFinished: true,
+        }
+        localStorage.setItem('quizState', JSON.stringify(toSave))
+      } catch (e) {
+        // ignore
+      }
+
       setQuizFinished(true)
       navigate('/results', { replace: true })
       return
@@ -65,18 +80,18 @@ const QuizPage = () => {
     setShowFeedback(false)
   }
 
-  // const resetQuiz = () => {
-  //   setCurrentQuestionIndex(0)
-  //   setSelectedAnswerId(null)
-  //   setShowFeedback(false)
-  //   setHistory([])
-  //   setQuizFinished(false)
-  //   try {
-  //     localStorage.removeItem('quizState')
-  //   } catch (e) {
-  //     // ignore
-  //   }
-  // }
+  const resetQuiz = () => {
+    setCurrentQuestionIndex(0)
+    setSelectedAnswerId(null)
+    setShowFeedback(false)
+    setHistory([])
+    setQuizFinished(false)
+    try {
+      localStorage.removeItem('quizState')
+    } catch (e) {
+      // ignore
+    }
+  }
 
   // Persist quiz state on changes
   useEffect(() => {
@@ -126,10 +141,10 @@ const QuizPage = () => {
                 </Box>
               ))}
             </Stack>
-{/* 
+
             <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
               Refazer Quiz
-            </Button> */}
+            </Button>
           </CardContent>
         </Card>
       </Box>
@@ -159,21 +174,21 @@ const QuizPage = () => {
               sx={{ height: { xs: 10, sm: 12, md: 16 }, borderRadius: 2, backgroundColor: theme.palette.action.hover, '& .MuiLinearProgress-bar': { backgroundColor: theme.palette.primary.main } }}
             />
           </Box>
-            <Typography
-              variant="h6"
-              sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left', fontSize: { xs: '1rem', sm: '1.05rem', md: '1.15rem' } }}
-            >
-              {currentQuestion.id}. {currentQuestion.question}
-            </Typography>
+          <Typography
+            variant="h6"
+            sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600, textAlign: 'left', fontSize: { xs: '1rem', sm: '1.05rem', md: '1.15rem' } }}
+          >
+            {currentQuestion.id}. {currentQuestion.question}
+          </Typography>
 
-            {currentQuestion.image && (
-              <Box
-                component="img"
-                src={currentQuestion.image}
-                alt={`Imagem da pergunta ${currentQuestion.id}`}
-                sx={{ width: '100%', maxHeight: { xs: 120, sm: 220, md: 360 }, objectFit: 'contain', mb: 3, borderRadius: 2 }}
-              />
-            )}
+          {currentQuestion.image && (
+            <Box
+              component="img"
+              src={currentQuestion.image}
+              alt={`Imagem da pergunta ${currentQuestion.id}`}
+              sx={{ width: '100%', maxHeight: { xs: 120, sm: 220, md: 360 }, objectFit: 'contain', mb: 3, borderRadius: 2 }}
+            />
+          )}
 
           <Stack spacing={2}>
             {currentQuestion.options.map((option) => {
@@ -216,7 +231,7 @@ const QuizPage = () => {
               )
             })}
           </Stack>
-    
+
           <Dialog
             open={Boolean(showFeedback)}
             onClose={() => { }}
@@ -229,9 +244,9 @@ const QuizPage = () => {
               }
             }}
           >
-            <DialogTitle sx={{ fontWeight: 700, pb: 0, color: history[history.length - 1]?.isCorrect ? 'success.main': 'error.main' }}>
+            <DialogTitle sx={{ fontWeight: 700, pb: 0, color: history[history.length - 1]?.isCorrect ? 'success.main' : 'error.main' }}>
               {history[history.length - 1]?.isCorrect
-                  ?  ' Resposta Correta!' : ' Resposta Incorreta'}!!
+                ? ' Resposta Correta!' : ' Resposta Incorreta'}!!
             </DialogTitle>
 
             <DialogContent>

@@ -1,9 +1,6 @@
-import { Box, Typography, Divider, Chip, Stack, Button } from '@mui/material'
-import { ArrowBack } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { Box, Typography, Divider, Chip, Stack } from '@mui/material'
 
 const ReviewAnswersPage = () => {
-  const navigate = useNavigate()
 
   const savedState = (() => {
     try {
@@ -13,6 +10,8 @@ const ReviewAnswersPage = () => {
       return { history: [] }
     }
   })()
+
+  
 
   const history = savedState.history ?? []
 
@@ -51,7 +50,7 @@ const ReviewAnswersPage = () => {
               }}
             >
               <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-                {index + 1}. {item.question}
+                {item.id ?? index + 1}. {item.question}
               </Typography>
 
               <Typography sx={{ fontWeight: 700, color: item.isCorrect ? 'success.main' : 'error.main', mb: 0.5 }}>
@@ -59,7 +58,7 @@ const ReviewAnswersPage = () => {
               </Typography>
 
               <Typography sx={{ mb: 0.5 }}>
-                Resposta correta: {item.correctAnswers.join(', ')}
+                Resposta correta: {(item.correctAnswers ?? []).join(', ')}
               </Typography>
 
               <Chip
@@ -72,6 +71,7 @@ const ReviewAnswersPage = () => {
           ))
         )}
       </Stack>
+      
     </Box>
   )
 }

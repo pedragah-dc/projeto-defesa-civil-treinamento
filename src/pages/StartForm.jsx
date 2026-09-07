@@ -60,14 +60,14 @@ const StartForm = ({ onStart }) => {
           fullWidth
         />
 
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+        {/* <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
           <DatePicker
             label="Data da Capacitação"
             value={date}
             onChange={(newValue) => setDate(newValue)}
             slotProps={{ textField: { fullWidth: true } }}
           />
-        </LocalizationProvider>
+        </LocalizationProvider> */}
         <Button
           variant="contained"
           size="large"
@@ -83,7 +83,7 @@ const StartForm = ({ onStart }) => {
           }}
         >
           <PlayArrowRounded sx={{ mr: 1, height: '40px', width: '40px' }} />
-          <Typography sx={{ fontFamily: 'PixelifySans', fontSize: '24px' }}>
+          <Typography sx={{ fontFamily: 'Inter', fontWeight: 600, fontSize: '24px' }}>
             Iniciar Quiz
           </Typography>
         </Button>
