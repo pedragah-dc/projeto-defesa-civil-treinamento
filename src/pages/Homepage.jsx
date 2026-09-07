@@ -25,7 +25,7 @@ export const Homepage = ({ onStart }) => {
 
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: '6px', width: '100%', textAlign: 'left', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', gap: '6px', width: '100%', textAlign: 'left', boxSizing: 'border-box' }} >
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700, fontSize: { xs: '26px', sm: '32px' }, fontFamily: 'PixelifySans', lineHeight: 1.1 }}>
+          <Typography variant="h3" component="h1" sx={{ fontWeight: 500, fontSize: { xs: '24px', sm: '28px' }, fontFamily: 'Inter', lineHeight: 1.1 }}>
             Defesa Civil
           </Typography>
           <Typography
@@ -67,7 +67,7 @@ export const Homepage = ({ onStart }) => {
           sx={{ marginTop: { xs: '32px', sm: '64px' }, px: 2, py: 1, alignSelf: 'center' }}
         >
           <PlayArrowRounded sx={{ mr: 1, height: '40px', width: '40px' }} />
-          <Typography sx={{ fontFamily: 'PixelifySans', fontSize: { xs: '20px', sm: '24px' } }}>
+          <Typography sx={{ fontFamily: 'Inter', fontWeight: 600, fontSize: '24px'}}>
             Iniciar
           </Typography>
         </Button>

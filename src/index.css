@@ -56,7 +56,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1932 0%, #00396d 50%, #0069aa 100%);
+
+  background: linear-gradient(120deg, #000a14 0%, #0c3153 80%, #06466e 100%);
+  /* background: linear-gradient(120deg, #01203F 0%, #1b4d7c 80%, #1b5f8a 100%); */
 }
 
 #root {
