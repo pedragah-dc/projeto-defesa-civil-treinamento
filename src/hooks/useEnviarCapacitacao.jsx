@@ -29,21 +29,24 @@ export const useEnviarCapacitacao = () => {
       };
 
       // 3. Envia para o Backend
-      const response = await fetch(import.meta.env.VITE_URL_SERVER_BACKEND, {
+      const baseUrl = import.meta.env.VITE_URL_SERVER_BACKEND;
+
+      // Garante que o endpoint /api/capacitacao seja anexado à URL base
+      const response = await fetch(`${baseUrl}/api/capacitacao`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
-
+      
       if (!response.ok) {
         throw new Error(`Falha ao salvar capacitação: ${response.status}`);
       }
 
       const data = await response.json();
       setIsSuccess(true);
-      
+
       // Opcional: Limpar os dados após o envio com sucesso
       // localStorage.removeItem('startForm');
       // localStorage.removeItem('quizState');
