@@ -1,38 +1,54 @@
 import { PlayArrowRounded } from '@mui/icons-material'
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+
+const getInitialForm = () => {
+  try {
+    const raw = localStorage.getItem('startForm')
+    if (!raw) {
+      return { name: '', date: new Date().toISOString() }
+    }
+
+    const parsed = JSON.parse(raw)
+    return {
+      name: parsed?.name || '',
+      date: parsed?.date || new Date().toISOString(),
+    }
+  } catch (e) {
+    return { name: '', date: new Date().toISOString() }
+  }
+}
 
 const StartForm = ({ onStart }) => {
-  const [name, setName] = useState('')
-  const [date, setDate] = useState(null)
+  const [form, setForm] = useState(getInitialForm)
 
-  // Restore saved start form if present
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('startForm')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        if (parsed?.name) setName(parsed.name)
-        if (parsed?.date) setDate(dayjs(parsed.date))
-      }
-    } catch (e) {
-      // ignore parse errors
+  const handleNameChange = (event) => {
+    setForm((prev) => ({
+      ...prev,
+      name: event.target.value,
+    }))
+  }
+
+  const handleStart = () => {
+    const trimmedName = form.name.trim()
+    if (!trimmedName) return
+
+    const savedForm = {
+      name: trimmedName,
+      date: form.date || new Date().toISOString(),
     }
-  }, [])
 
-  // Persist form to localStorage
-  useEffect(() => {
     try {
-      localStorage.setItem('startForm', JSON.stringify({ name, date: date ? dayjs(date).toISOString() : null }))
+      localStorage.setItem('startForm', JSON.stringify(savedForm))
     } catch (e) {
       // ignore
     }
-  }, [name, date])
 
-  const isReadyToStart = name.trim().length > 0 && dayjs(date).isValid()
+    onStart?.()
+  }
+
+  const isReadyToStart = form.name.trim().length > 0
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', padding: '24px' }}>
@@ -40,7 +56,7 @@ const StartForm = ({ onStart }) => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 3,
+          gap: 2,
           width: '100%',
           maxWidth: 520,
           backgroundColor: 'rgba(255,255,255,0.96)',
@@ -55,31 +71,27 @@ const StartForm = ({ onStart }) => {
 
         <TextField
           label="Nome Completo"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          value={form.name}
+          onChange={handleNameChange}
           fullWidth
         />
 
-        {/* <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
-          <DatePicker
-            label="Data da Capacitação"
-            value={date}
-            onChange={(newValue) => setDate(newValue)}
-            slotProps={{ textField: { fullWidth: true } }}
-          />
-        </LocalizationProvider> */}
+      <Typography sx={{ marginTop: '-2px', textAlign: 'center', color: '#494e55c7', fontWeight: 400, fontSize: '12px' }}>
+          Data da capacitação: {dayjs(form.date).format('DD/MM/YYYY HH:mm')}
+        </Typography>
+
         <Button
           variant="contained"
           size="large"
           disabled={!isReadyToStart}
-          onClick={onStart}
+          onClick={handleStart}
           sx={{
             mt: 1,
             maxWidth: '80vw',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mx: 'auto' // Centraliza o botão horizontalmente no container
+            mx: 'auto',
           }}
         >
           <PlayArrowRounded sx={{ mr: 1, height: '40px', width: '40px' }} />

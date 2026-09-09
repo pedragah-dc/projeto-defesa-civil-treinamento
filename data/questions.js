@@ -286,7 +286,7 @@ export const questions = () => {
             question: 'Qual é o código do COBRADE para Terremoto?',
             image: terremoto,
             options: [
-                { id: 'a', text: '1.1.1.1.0', correct: false },
+                { id: 'a', text: '1.1.1.0.1', correct: false },
                 { id: 'b', text: '1.1.1.2.0', correct: false },
                 { id: 'c', text: '1.1.1.1.0', correct: true },
                 { id: 'd', text: '1.1.2.0.0', correct: false },

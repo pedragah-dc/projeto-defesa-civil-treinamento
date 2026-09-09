@@ -4,16 +4,19 @@ import { useMemo, useState, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import { questions } from '../../data/questions'
+import { useEnviarCapacitacao } from '../hooks/useEnviarCapacitacao'
 
 const { quizQuestions } = questions();
 
 const QuizPage = () => {
+  const { enviarDados } = useEnviarCapacitacao();
 
   const savedState = (() => {
     try {
       const raw = localStorage.getItem('quizState')
       return raw ? JSON.parse(raw) : null
     } catch (e) {
+      console.error('Erro ao ler quizState do localStorage:', e)
       return null
     }
   })()
@@ -33,41 +36,59 @@ const QuizPage = () => {
     () => history.filter((item) => item.isCorrect).length,
     [history],
   )
-
   const handleAnswer = (option) => {
     if (showFeedback) return
 
-    const isCorrect = option.correct;
+    const isCorrect = option.correct
     const questionSummary = {
-      id: currentQuestion.id,
+      idQuestion: currentQuestion.id,
       question: currentQuestion.question,
       selectedAnswer: option.text,
       isCorrect,
-      correctAnswers: currentQuestion.options
-        .filter((item) => item.correct)
-        .map((item) => item.text),
-      allOptions: currentQuestion.options,
     }
 
+    // Calcula o novo histórico de forma síncrona, sem depender do setState
+    const existingIndex = history.findIndex((item) => item.id === currentQuestion.id)
+    let nextHistory = [...history]
+
+    if (existingIndex >= 0) {
+      nextHistory[existingIndex] = questionSummary
+    } else {
+      nextHistory.push(questionSummary)
+    }
+
+    // Atualiza os estados do React
+    setHistory(nextHistory)
     setSelectedAnswerId(option.id)
     setShowFeedback(true)
-    setHistory((previous) => [...previous, questionSummary])
-  }
 
-  const handleNext = () => {
+    // Salva INSTANTANEAMENTE no localStorage, sem esperar o React renderizar
+    try {
+      localStorage.setItem('quizState', JSON.stringify({
+        currentQuestionIndex,
+        selectedAnswerId: option.id,
+        showFeedback: true,
+        history: nextHistory,
+        quizFinished
+      }))
+    } catch (e) {
+      console.error('Erro ao salvar quizState no localStorage:', e)
+    }
+  }
+  const handleNext = async () => {
     if (currentQuestionIndex === quizQuestions.length - 1) {
-      // Ensure final state (including latest history) is persisted
       try {
-        const toSave = {
+        localStorage.setItem('quizState', JSON.stringify({
           currentQuestionIndex,
           selectedAnswerId,
           showFeedback,
           history,
           quizFinished: true,
-        }
-        localStorage.setItem('quizState', JSON.stringify(toSave))
+        }))
+
+        await enviarDados()
       } catch (e) {
-        // ignore
+        console.error('Erro ao finalizar quiz ou enviar dados:', e)
       }
 
       setQuizFinished(true)
@@ -75,11 +96,23 @@ const QuizPage = () => {
       return
     }
 
-    setCurrentQuestionIndex((previous) => previous + 1)
+    const nextIndex = currentQuestionIndex + 1
+    setCurrentQuestionIndex(nextIndex)
     setSelectedAnswerId(null)
     setShowFeedback(false)
-  }
 
+    try {
+      localStorage.setItem('quizState', JSON.stringify({
+        currentQuestionIndex: nextIndex,
+        selectedAnswerId: null,
+        showFeedback: false,
+        history,
+        quizFinished
+      }))
+    } catch (e) {
+      console.error('Erro ao salvar quizState no localStorage:', e)
+    }
+  }
   const resetQuiz = () => {
     setCurrentQuestionIndex(0)
     setSelectedAnswerId(null)
@@ -89,7 +122,7 @@ const QuizPage = () => {
     try {
       localStorage.removeItem('quizState')
     } catch (e) {
-      // ignore
+      console.error('Erro ao remover quizState do localStorage:', e)
     }
   }
 
@@ -105,7 +138,7 @@ const QuizPage = () => {
       }
       localStorage.setItem('quizState', JSON.stringify(toSave))
     } catch (e) {
-      // ignore
+      console.error('Erro ao salvar quizState no localStorage:', e)
     }
   }, [currentQuestionIndex, selectedAnswerId, showFeedback, history, quizFinished])
 
