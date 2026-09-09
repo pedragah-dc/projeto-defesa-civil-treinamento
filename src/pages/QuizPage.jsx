@@ -142,47 +142,7 @@ const QuizPage = () => {
     }
   }, [currentQuestionIndex, selectedAnswerId, showFeedback, history, quizFinished])
 
-  if (quizFinished) {
-    return (
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
-        <Card sx={{ width: '100%', maxWidth: 760, p: 2, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
-              Resultado do Quiz
-            </Typography>
-
-            <Alert severity={score === quizQuestions.length ? 'success' : 'info'} sx={{ mb: 3 }}>
-              Você acertou {score} de {quizQuestions.length} perguntas.
-            </Alert>
-
-            <Stack spacing={2} sx={{ textAlign: 'left' }}>
-              {history.map((item, index) => (
-                <Box key={`${item.question}-${index}`} sx={{ border: `1px solid ${theme.palette.divider}`, borderRadius: 2, p: 2, backgroundColor: theme.palette.background.default }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-                    {index + 1}. {item.question}
-                  </Typography>
-                  <Typography sx={{ color: item.isCorrect ? theme.palette.success.main : theme.palette.error.main }}>
-                    Sua resposta: {item.selectedAnswer}
-                  </Typography>
-                  <Typography sx={{ mt: 1 }}>Resposta correta: {item.correctAnswers.join(', ')}</Typography>
-                  <Chip
-                    label={item.isCorrect ? 'Correto' : 'Incorreto'}
-                    color={item.isCorrect ? 'success' : 'error'}
-                    size="small"
-                    sx={{ mt: 1 }}
-                  />
-                </Box>
-              ))}
-            </Stack>
-
-            <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
-              Refazer Quiz
-            </Button>
-          </CardContent>
-        </Card>
-      </Box>
-    )
-  }
+  // Removed in-page results display: results are shown in `ResultPage`.
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>

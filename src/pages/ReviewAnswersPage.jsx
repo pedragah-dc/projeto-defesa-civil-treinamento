@@ -1,4 +1,5 @@
-import { Box, Typography, Divider, Chip, Stack } from '@mui/material'
+import { Box, Typography, Divider, Chip, Stack, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const ReviewAnswersPage = () => {
 
@@ -13,7 +14,18 @@ const ReviewAnswersPage = () => {
 
   
 
+  const navigate = useNavigate()
+
   const history = savedState.history ?? []
+
+  const resetQuiz = () => {
+    try {
+      localStorage.removeItem('quizState')
+    } catch (e) {
+      console.error('Erro ao remover quizState do localStorage:', e)
+    }
+    navigate('/quiz', { replace: true })
+  }
 
   return (
     <Box sx={{ width: '100%', maxWidth: 920, mx: 'auto', px: { xs: 2, sm: 3 }, py: { xs: 3, sm: 4 }, color: 'white' }}>
@@ -71,7 +83,13 @@ const ReviewAnswersPage = () => {
           ))
         )}
       </Stack>
-      
+
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+        <Button variant="contained" color="primary" onClick={resetQuiz} sx={{ minWidth: 160 }}>
+          Refazer Quiz
+        </Button>
+      </Box>
+
     </Box>
   )
 }
