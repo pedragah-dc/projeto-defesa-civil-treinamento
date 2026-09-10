@@ -167,7 +167,7 @@ const QuizPage = () => {
                   <Typography sx={{ color: item.isCorrect ? theme.palette.success.main : theme.palette.error.main }}>
                     Sua resposta: {item.selectedAnswer}
                   </Typography>
-                  <Typography sx={{ mt: 1 }}>Resposta correta: {item.correctAnswers.join(', ')}</Typography>
+                  <Typography sx={{ mt: 1 }}>Resposta correta: {Array.isArray(item.correctAnswers) ? item.correctAnswers.join(', ') : (item.correctAnswers.text ?? '')}</Typography>
                   <Chip
                     label={item.isCorrect ? 'Correto' : 'Incorreto'}
                     color={item.isCorrect ? 'success' : 'error'}
