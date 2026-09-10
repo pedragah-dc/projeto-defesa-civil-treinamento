@@ -32,10 +32,10 @@ const QuizPage = () => {
   const theme = useTheme()
   const navigate = useNavigate()
 
-  const score = useMemo(
-    () => history.filter((item) => item.isCorrect).length,
-    [history],
-  )
+  // const score = useMemo(
+  //   () => history.filter((item) => item.isCorrect).length,
+  //   [history],
+  // )
   const handleAnswer = (option) => {
     if (showFeedback) return
 
@@ -116,18 +116,18 @@ const QuizPage = () => {
       console.error('Erro ao salvar quizState no localStorage:', e)
     }
   }
-  const resetQuiz = () => {
-    setCurrentQuestionIndex(0)
-    setSelectedAnswerId(null)
-    setShowFeedback(false)
-    setHistory([])
-    setQuizFinished(false)
-    try {
-      localStorage.removeItem('quizState')
-    } catch (e) {
-      console.error('Erro ao remover quizState do localStorage:', e)
-    }
-  }
+  // const resetQuiz = () => {
+  //   setCurrentQuestionIndex(0)
+  //   setSelectedAnswerId(null)
+  //   setShowFeedback(false)
+  //   setHistory([])
+  //   setQuizFinished(false)
+  //   try {
+  //     localStorage.removeItem('quizState')
+  //   } catch (e) {
+  //     console.error('Erro ao remover quizState do localStorage:', e)
+  //   }
+  // }
 
   // Persist quiz state on changes
   useEffect(() => {
@@ -145,51 +145,47 @@ const QuizPage = () => {
     }
   }, [currentQuestionIndex, selectedAnswerId, showFeedback, history, quizFinished])
 
-<<<<<<< HEAD
-  // Removed in-page results display: results are shown in `ResultPage`.
-=======
-  if (quizFinished) {
-    return (
-      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
-        <Card sx={{ width: '100%', maxWidth: 760, p: 2, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
-          <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
-              Resultado do Quiz
-            </Typography>
+  // if (quizFinished) {
+  //   return (
+  //     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
+  //       <Card sx={{ width: '100%', maxWidth: 760, p: 2, borderRadius: 3, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }}>
+  //         <CardContent>
+  //           <Typography variant="h4" sx={{ fontWeight: 700, mb: 2, color: theme.palette.text.primary }}>
+  //             Resultado do Quiz
+  //           </Typography>
 
-            <Alert severity={score === quizQuestions.length ? 'success' : 'info'} sx={{ mb: 3 }}>
-              Você acertou {score} de {quizQuestions.length} perguntas.
-            </Alert>
+  //           <Alert severity={score === quizQuestions.length ? 'success' : 'info'} sx={{ mb: 3 }}>
+  //             Você acertou {score} de {quizQuestions.length} perguntas.
+  //           </Alert>
 
-            <Stack spacing={2} sx={{ textAlign: 'left' }}>
-              {history.map((item, index) => (
-                <Box key={`${item.question}-${index}`} sx={{ border: `1px solid ${theme.palette.divider}`, borderRadius: 2, p: 2, backgroundColor: theme.palette.background.default }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
-                    {index + 1}. {item.question}
-                  </Typography>
-                  <Typography sx={{ color: item.isCorrect ? theme.palette.success.main : theme.palette.error.main }}>
-                    Sua resposta: {item.selectedAnswer}
-                  </Typography>
-                  <Typography sx={{ mt: 1 }}>Resposta correta: {Array.isArray(item.correctAnswers) ? item.correctAnswers.join(', ') : (item.correctAnswers.text ?? '')}</Typography>
-                  <Chip
-                    label={item.isCorrect ? 'Correto' : 'Incorreto'}
-                    color={item.isCorrect ? 'success' : 'error'}
-                    size="small"
-                    sx={{ mt: 1 }}
-                  />
-                </Box>
-              ))}
-            </Stack>
+  //           <Stack spacing={2} sx={{ textAlign: 'left' }}>
+  //             {history.map((item, index) => (
+  //               <Box key={`${item.question}-${index}`} sx={{ border: `1px solid ${theme.palette.divider}`, borderRadius: 2, p: 2, backgroundColor: theme.palette.background.default }}>
+  //                 <Typography variant="subtitle1" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 1 }}>
+  //                   {index + 1}. {item.question}
+  //                 </Typography>
+  //                 <Typography sx={{ color: item.isCorrect ? theme.palette.success.main : theme.palette.error.main }}>
+  //                   Sua resposta: {item.selectedAnswer}
+  //                 </Typography>
+  //                 <Typography sx={{ mt: 1 }}>Resposta correta: {Array.isArray(item.correctAnswers) ? item.correctAnswers.join(', ') : (item.correctAnswers.text ?? '')}</Typography>
+  //                 <Chip
+  //                   label={item.isCorrect ? 'Correto' : 'Incorreto'}
+  //                   color={item.isCorrect ? 'success' : 'error'}
+  //                   size="small"
+  //                   sx={{ mt: 1 }}
+  //                 />
+  //               </Box>
+  //             ))}
+  //           </Stack>
 
-            <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
-              Refazer Quiz
-            </Button>
-          </CardContent>
-        </Card>
-      </Box>
-    )
-  }
->>>>>>> homologacao
+  //           <Button variant="contained" onClick={resetQuiz} sx={{ mt: 4 }}>
+  //             Refazer Quiz
+  //           </Button>
+  //         </CardContent>
+  //       </Card>
+  //     </Box>
+  //   )
+  // }
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3 }}>
