@@ -45,6 +45,9 @@ const QuizPage = () => {
       question: currentQuestion.question,
       selectedAnswer: option.text,
       isCorrect,
+      correctAnswers: currentQuestion.options
+        .find((item) => item.correct),
+      allOptions: currentQuestion.options
     }
 
     // Calcula o novo histórico de forma síncrona, sem depender do setState

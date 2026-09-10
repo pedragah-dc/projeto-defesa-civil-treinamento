@@ -1,6 +1,8 @@
-import { Box, Typography, Divider, Chip, Stack } from '@mui/material'
+import { Box, Typography, Divider, Chip, Stack, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const ReviewAnswersPage = () => {
+  const navigate = useNavigate()
 
   const savedState = (() => {
     try {
@@ -14,6 +16,18 @@ const ReviewAnswersPage = () => {
   
 
   const history = savedState.history ?? []
+
+  const resetQuiz = () => {
+    try {
+      localStorage.removeItem('quizState')
+      localStorage.removeItem('capacitacao')
+      localStorage.removeItem('startForm')
+    } catch (e) {
+      console.error('Erro ao limpar os dados do quiz no localStorage:', e)
+    }
+
+    navigate('/form', { replace: true })
+  }
 
   return (
     <Box sx={{ width: '100%', maxWidth: 920, mx: 'auto', px: { xs: 2, sm: 3 }, py: { xs: 3, sm: 4 }, color: 'white' }}>
@@ -58,7 +72,7 @@ const ReviewAnswersPage = () => {
               </Typography>
 
               <Typography sx={{ mb: 0.5 }}>
-                Resposta correta: {(item.correctAnswers ?? []).join(', ')}
+                Resposta correta: {Array.isArray(item.correctAnswers) ? item.correctAnswers.join(', ') : (item.correctAnswers.text ?? '')}
               </Typography>
 
               <Chip
@@ -71,7 +85,12 @@ const ReviewAnswersPage = () => {
           ))
         )}
       </Stack>
-      
+
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+        <Button variant="contained" color="primary" onClick={resetQuiz} sx={{ minWidth: 180 }}>
+          Refazer Quiz
+        </Button>
+      </Box>
     </Box>
   )
 }

@@ -29,7 +29,8 @@ export const useEnviarCapacitacao = () => {
       };
 
       // 3. Envia para o Backend
-      const response = await fetch(import.meta.env.VITE_URL_SERVER_BACKEND, {
+      const URL_FINAL = import.meta.env.VITE_URL_SERVER_BACKEND + '/api/capacitacao';
+      const response = await fetch(URL_FINAL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
