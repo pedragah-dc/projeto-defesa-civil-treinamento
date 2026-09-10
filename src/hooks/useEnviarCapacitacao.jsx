@@ -29,10 +29,15 @@ export const useEnviarCapacitacao = () => {
       };
 
       // 3. Envia para o Backend
+<<<<<<< HEAD
       const baseUrl = import.meta.env.VITE_URL_SERVER_BACKEND;
 
       // Garante que o endpoint /api/capacitacao seja anexado à URL base
       const response = await fetch(`${baseUrl}/api/capacitacao`, {
+=======
+      const URL_FINAL = import.meta.env.VITE_URL_SERVER_BACKEND + '/api/capacitacao';
+      const response = await fetch(URL_FINAL, {
+>>>>>>> homologacao
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
