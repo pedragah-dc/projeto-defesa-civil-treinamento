@@ -78,7 +78,7 @@ const QuizPage = () => {
       console.error('Erro ao salvar quizState no localStorage:', e)
     }
   }
-  const handleNext = async () => {
+  const handleNext = () => {
     if (currentQuestionIndex === quizQuestions.length - 1) {
       try {
         localStorage.setItem('quizState', JSON.stringify({
@@ -88,11 +88,12 @@ const QuizPage = () => {
           history,
           quizFinished: true,
         }))
-
-        await enviarDados()
       } catch (e) {
-        console.error('Erro ao finalizar quiz ou enviar dados:', e)
+        console.error('Erro ao salvar quizState final no localStorage:', e)
       }
+
+      // Dispara a requisição em segundo plano sem travar a navegação (sem await)
+      enviarDados().catch((e) => console.error('Erro no envio assíncrono:', e))
 
       setQuizFinished(true)
       navigate('/results', { replace: true })
