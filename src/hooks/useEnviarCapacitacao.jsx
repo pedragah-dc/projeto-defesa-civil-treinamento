@@ -27,9 +27,6 @@ export const useEnviarCapacitacao = () => {
         startForm: startForm,
         history: quizState.history || []
       };
-
-      alert("Dados prontos para envio: " + JSON.stringify(payload)); // Para depuração  
-
       // 3. Envia para o Backend
       const baseUrl = import.meta.env.VITE_URL_SERVER_BACKEND;
 
