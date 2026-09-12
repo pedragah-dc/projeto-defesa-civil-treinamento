@@ -28,6 +28,8 @@ export const useEnviarCapacitacao = () => {
         history: quizState.history || []
       };
 
+      alert("Dados prontos para envio: " + JSON.stringify(payload)); // Para depuração  
+
       // 3. Envia para o Backend
       const baseUrl = import.meta.env.VITE_URL_SERVER_BACKEND;
 
@@ -44,7 +46,17 @@ export const useEnviarCapacitacao = () => {
         throw new Error(`Falha ao salvar capacitação: ${response.status}`);
       }
 
-      const data = await response.json();
+      // Alguns backends podem retornar um corpo vazio. Lidar com isso sem lançar erro.
+      let data = null;
+      const text = await response.text();
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          console.warn('Resposta do servidor não é JSON válido:', e);
+        }
+      }
+
       setIsSuccess(true);
 
       // Opcional: Limpar os dados após o envio com sucesso
